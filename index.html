@@ -83,12 +83,15 @@
 <script>
     $(document).foundation();
 
+    //this will add 1 record to our table.  We will make sure that our name field is not empty and size is an integer value
     $("#add_record").click(function(){
+
 
         var name = $("#name").val();
         var size = $("#size").val();
         var recordTotal = parseInt($('#record_total').text());;
 
+        //if size is an integer value and name is not blank, add to the records table, increase our running total, and change record_total with the current value
         if(Number.isInteger(parseInt(size)) && name !== ""){
             recordTotal += parseInt(size);
             $('#record').append('<tr><td>' + name + '</td><td>' + size + '</td><td><button type="button" class="alert button">Remove Record</button></td></tr>');
@@ -101,6 +104,8 @@
 
     });
 
+    //remove table row parent of the delete button clicked
+    //was necessary to use .on for this function, as these fields are all added to the DOM after page load
     $("#record").on('click', '.alert', function(){
 
 
@@ -115,6 +120,11 @@
 
     });
 
+    /*calculate our necessary values based on given input
+    R = total size of the record, total of the size of each record entry, B = block size in bytes, (we input this),
+    r = total number of records (we input this), bfr (blocking factor) = floor ( B / R ), b (total required blocks) = ceiling( r / bfr )
+    we do the necessary calculations and update the proper values on the page.
+    */
     $("#calculate").click(function(){
 
 
