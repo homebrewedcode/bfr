@@ -1,0 +1,134 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BFR Calculator</title>
+    <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+</head>
+<body>
+
+<div class="row">
+    <div class="medium-6 columns">
+        <h1>Record Fields</h1>
+        <p>Enter all of your record fields with size to calculate the record size <b>R</b></p>
+        <form data-abide>
+            <div>
+                <div>
+                    <label><b>Field Name</b>
+                        <input id="name" required pattern="alpha_numeric" type="text" size="100" placeholder="Name">
+                    </label>
+                </div>
+                <div>
+                    <label><b>Field Size in Bytes</b>
+                        <input id="size" required pattern="integer" type="text" size="100" placeholder="Size">
+                    </label>
+                </div>
+                <div>
+                    <button type="button" class="success button" id="add_record">Submit Field</button>
+                </div>
+            </div>
+
+        </form>
+        <table>
+            <thead>
+            <tr>
+                <th width="200">Field Name</th>
+                <th width="200">Field Size (Bytes)</th>
+                <th width="200">Remove Record</th>
+            </tr>
+            </thead>
+            <tbody id="record">
+            </tbody>
+        </table>
+    </div>
+    <div class="medium-6 columns">
+        <h1>Data</h1>
+        <div>
+            <label><b>B value (block size)</b>
+                <input id="block_size" required pattern="integer" type="text" size="100" placeholder="Block Size">
+            </label>
+        </div>
+        <div>
+            <label><b>P value (block pointer size)</b>
+                <input id="block_pointer_size" required pattern="integer" type="text" size="100" placeholder="Block Pointer Size">
+            </label>
+        </div>
+        <div>
+            <label><b>r value (total number or records)</b>
+                <input id="record_count" required pattern="integer" type="text" size="100" placeholder="Record Count">
+            </label>
+        </div>
+        <div>
+            <button type="button" class="success button" id="calculate">Calculate</button>
+        </div>
+
+        <p><b>R (size total of fields)</b></p>
+        <p id="record_total">0</p>
+
+        <p><b>bfr (blocking factor)</b></p>
+        <p id="blocking_factor">0</p>
+
+        <p><b>b (total required blocks)</b></p>
+        <p id="total_blocks">0</p>
+
+
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+<script>
+    $(document).foundation();
+
+    $("#add_record").click(function(){
+
+        var name = $("#name").val();
+        var size = $("#size").val();
+        var recordTotal = parseInt($('#record_total').text());;
+
+        if(Number.isInteger(parseInt(size)) && name !== ""){
+            recordTotal += parseInt(size);
+            $('#record').append('<tr><td>' + name + '</td><td>' + size + '</td><td><button type="button" class="alert button">Remove Record</button></td></tr>');
+            $("#record_total").replaceWith('<p id="record_total">' + recordTotal + '</p>');
+        } else{
+            alert("Make sure all fields have values and Size field is an integer value.");
+            console.log(name);
+        }
+
+
+    });
+
+    $("#record").on('click', '.alert', function(){
+
+
+        var recordValue = parseInt($(this).parent().prev().text());
+        var recordTotal = parseInt($('#record_total').text());
+        var newTotal = recordTotal - recordValue;
+
+        if(recordTotal > 0){
+            $(this).parent().parent().remove();
+            $("#record_total").replaceWith('<p id="record_total">' + newTotal + '</p>');
+        }
+
+    });
+
+    $("#calculate").click(function(){
+
+
+        var R = parseInt($('#record_total').text());
+        var B = parseInt($('#block_size').val());
+        var r = parseInt($('#record_count').val());
+        var bfr = Math.floor( B/R );
+        var b = Math.ceil( r/bfr );
+
+        $("#blocking_factor").replaceWith('<p id="blocking_factor">' + bfr + '</p>');
+        $("#total_blocks").replaceWith('<p id="total_blocks">' + b + '</p>');
+
+
+    });
+</script>
+</body>
+</html>
