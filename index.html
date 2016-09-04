@@ -134,8 +134,14 @@
         var bfr = Math.floor( B/R );
         var b = Math.ceil( r/bfr );
 
-        $("#blocking_factor").replaceWith('<p id="blocking_factor">' + bfr + '</p>');
-        $("#total_blocks").replaceWith('<p id="total_blocks">' + b + '</p>');
+        //check that we have good integer values
+        if(R > 0 && Number.isInteger(B) && Number.isInteger(r) ){
+            $("#blocking_factor").replaceWith('<p id="blocking_factor">' + bfr + '</p>');
+            $("#total_blocks").replaceWith('<p id="total_blocks">' + b + '</p>');
+        } else{
+            alert("Please enter at least one record and ensure B, P, and r have valid values");
+        }
+
 
 
     });
