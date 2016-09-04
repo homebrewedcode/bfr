@@ -9,6 +9,19 @@
 <body>
 <div class="row" style="border: 10px solid #466d98; margin-top: 20px; margin-bottom: 20px;">
     <div class="medium-3 columns" style="padding: 15px;">
+        <p><b>Select Index Type:</b></p>
+        <div class="switch large" style="padding: 15px;">
+            <input class="switch-input" id="primary-seondary" type="checkbox" name="indexswitch" checked="checked">
+            <label class="switch-paddle" for="primary-seondary">
+                <span class="show-for-sr">Select Index Type:</span>
+                <span class="switch-active" aria-hidden="true">Prim</span>
+                <span class="switch-inactive" aria-hidden="true">Sec</span>
+            </label>
+        </div>
+        <p><b>Index Type:</b></p>
+        <p id="index_type" class="stat">Primary</p>
+    </div>
+    <div class="medium-3 columns" style="padding: 15px;">
         <p><b>R (size total of fields)</b></p>
         <p id="record_total" class="stat">0</p>
 
@@ -18,7 +31,7 @@
         <p><b>b (total required blocks)</b></p>
         <p id="total_blocks" class="stat">0</p>
     </div>
-    <div class="medium-3 columns" style="padding: 15px;">
+    <div class="medium-6 columns" style="padding: 15px;">
         <p><b>Index Field</b></p>
         <p id="index_field_name" class="stat">NOT SET</p>
 
@@ -27,19 +40,6 @@
 
         <p><b>Ri (Pointer Size + Index Field Size)</b></p>
         <p id="record_index" class="stat">0</p>
-    </div>
-    <div class="medium-6 columns" style="padding: 15px;">
-        <p><b>Is this a primary or secondary index?</b></p>
-        <div class="switch large" style="padding: 15px;">
-            <input class="switch-input" id="primary-seondary" type="checkbox" name="indexswitch" checked="checked">
-            <label class="switch-paddle" for="primary-seondary">
-                <span class="show-for-sr">Is this a primary or secondary index?</span>
-                <span class="switch-active" aria-hidden="true">Prim</span>
-                <span class="switch-inactive" aria-hidden="true">Sec</span>
-            </label>
-        </div>
-        <p><b>Index Type</b></p>
-        <p id="index_type" class="stat">Primary</p>
     </div>
 </div>
 <div class="row">
