@@ -31,7 +31,7 @@
         <p><b>b (total required blocks)</b></p>
         <p id="total_blocks" class="stat">0</p>
     </div>
-    <div class="medium-6 columns" style="padding: 15px;">
+    <div class="medium-3 columns" style="padding: 15px;">
         <p><b>Index Field</b></p>
         <p id="index_field_name" class="stat">NOT SET</p>
 
@@ -40,6 +40,11 @@
 
         <p><b>Ri (Pointer Size + Index Field Size)</b></p>
         <p id="record_index" class="stat">0</p>
+    </div>
+    <div class="medium-3 columns" style="padding: 15px;">
+        <p><b>ri (total records in index)</b></p>
+        <p id="record_index_length" class="stat">0</p>
+
     </div>
 </div>
 <div class="row">
@@ -119,7 +124,7 @@
         if(Number.isInteger(parseInt(size)) && name !== ""){
             recordTotal += parseInt(size);
             $('#record').append('<tr><td><button type="button" class="success button index">Set Index</button></td><td>' + name + '</td><td>' + size + '</td><td><button type="button" class="alert button">Remove Record</button></td></tr>');
-            $("#record_total").replaceWith('<p id="record_total">' + recordTotal + '</p>');
+            $("#record_total").replaceWith('<p id="record_total" class="stat">' + recordTotal + '</p>');
         } else{
             alert("Make sure all fields have values and Size field is an integer value.");
             console.log(name);
@@ -139,7 +144,7 @@
 
         if(recordTotal > 0){
             $(this).parent().parent().remove();
-            $("#record_total").replaceWith('<p id="record_total">' + newTotal + '</p>');
+            $("#record_total").replaceWith('<p id="record_total" class="stat">' + newTotal + '</p>');
         }
 
     });
@@ -160,12 +165,23 @@
         var b = Math.ceil( r/bfr );
         var Ri = P + indexSize;
         var bfri = Math.floor( B/Ri );
+        var indexType = $('#index_type').text();
+        var ri = 0;
+
+        if(indexType === 'Primary'){
+            ri = b;
+        }else{
+            ri = r;
+        }
+
 
         //check that we have good integer values
-        if(R > 0 && Number.isInteger(B) && Number.isInteger(r) && Number.isInteger(P) ){
-            $("#blocking_factor").replaceWith('<p id="blocking_factor">' + bfr + '</p>');
-            $("#total_blocks").replaceWith('<p id="total_blocks">' + b + '</p>');
-            $('#record_index').replaceWith('<p id="record_index">' + Ri + '</p>');
+        if(R > 0 && Number.isInteger(B) && Number.isInteger(r) && Number.isInteger(P) && Number.isInteger(b)){
+            $("#blocking_factor").replaceWith('<p id="blocking_factor" class="stat">' + bfr + '</p>');
+            $("#total_blocks").replaceWith('<p id="total_blocks" class="stat">' + b + '</p>');
+            $('#record_index').replaceWith('<p id="record_index" class="stat">' + Ri + '</p>');
+            $('#record_index_length').replaceWith('<p id="record_index_length" class="stat">' + ri + '</p>');
+
 
         } else{
             alert("Please enter at least one record and ensure B, P, and r have valid values");
@@ -180,10 +196,10 @@
         var fieldSize = parseInt($(this).parent().next().next().text());
         var fieldName = $(this).parent().next().text();
 
-        $('#index_field_name').replaceWith('<p id="index_field_name">' + fieldName + '</p>');
-        $("#index_field_size").replaceWith('<p id="index_field_size">' + fieldSize + '</p>');
+        $('#index_field_name').replaceWith('<p id="index_field_name" class="stat">' + fieldName + '</p>');
+        $("#index_field_size").replaceWith('<p id="index_field_size" class="stat">' + fieldSize + '</p>');
     });
-
+    //change the index type with the radio switch
     $('input[name=indexswitch]').change(function(){
         var isOn = $('#primary-seondary').is(':checked');
 
@@ -193,6 +209,9 @@
             $("#index_type").replaceWith('<p id="index_type" class="stat">Secondary</p>');
         }
     });
+
+
+
 </script>
 </body>
 </html>
