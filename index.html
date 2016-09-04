@@ -7,7 +7,41 @@
     <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
 </head>
 <body>
+<div class="row" style="border: 10px solid #466d98; margin-top: 20px; margin-bottom: 20px;">
+    <div class="medium-3 columns" style="padding: 15px;">
+        <p><b>R (size total of fields)</b></p>
+        <p id="record_total" class="stat">0</p>
 
+        <p><b>bfr (blocking factor)</b></p>
+        <p id="blocking_factor" class="stat">0</p>
+
+        <p><b>b (total required blocks)</b></p>
+        <p id="total_blocks" class="stat">0</p>
+    </div>
+    <div class="medium-3 columns" style="padding: 15px;">
+        <p><b>Index Field</b></p>
+        <p id="index_field_name" class="stat">NOT SET</p>
+
+        <p><b>Index Field Size</b></p>
+        <p id="index_field_size" class="stat">0</p>
+
+        <p><b>Ri (Pointer Size + Index Field Size)</b></p>
+        <p id="record_index" class="stat">0</p>
+    </div>
+    <div class="medium-6 columns" style="padding: 15px;">
+        <p><b>Is this a primary or secondary index?</b></p>
+        <div class="switch large" style="padding: 15px;">
+            <input class="switch-input" id="primary-seondary" type="checkbox" name="indexswitch" checked="checked">
+            <label class="switch-paddle" for="primary-seondary">
+                <span class="show-for-sr">Is this a primary or secondary index?</span>
+                <span class="switch-active" aria-hidden="true">Prim</span>
+                <span class="switch-inactive" aria-hidden="true">Sec</span>
+            </label>
+        </div>
+        <p><b>Index Type</b></p>
+        <p id="index_type" class="stat">Primary</p>
+    </div>
+</div>
 <div class="row">
     <div class="medium-6 columns">
         <h1>Record Fields</h1>
@@ -64,28 +98,8 @@
             <button type="button" class="success button" id="calculate">Calculate</button>
         </div>
 
-        <p><b>R (size total of fields)</b></p>
-        <p id="record_total">0</p>
-
-        <p><b>bfr (blocking factor)</b></p>
-        <p id="blocking_factor">0</p>
-
-        <p><b>b (total required blocks)</b></p>
-        <p id="total_blocks">0</p>
-
-        <p><b>Index Field</b></p>
-        <p id="index_field_name">NOT SET</p>
-
-        <p><b>Index Field Size</b></p>
-        <p id="index_field_size">0</p>
-
-        <p><b>Ri (Pointer Size + Index Field Size)</b></p>
-        <p id="record_index">0</p>
-
-
     </div>
 </div>
-
 
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -168,6 +182,16 @@
 
         $('#index_field_name').replaceWith('<p id="index_field_name">' + fieldName + '</p>');
         $("#index_field_size").replaceWith('<p id="index_field_size">' + fieldSize + '</p>');
+    });
+
+    $('input[name=indexswitch]').change(function(){
+        var isOn = $('#primary-seondary').is(':checked');
+
+        if(isOn === true){
+            $("#index_type").replaceWith('<p id="index_type" class="stat">Primary</p>');
+        }else{
+            $("#index_type").replaceWith('<p id="index_type" class="stat">Secondary</p>');
+        }
     });
 </script>
 </body>
