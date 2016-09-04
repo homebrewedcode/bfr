@@ -33,6 +33,7 @@
         <table>
             <thead>
             <tr>
+                <th width="200">Index Field</th>
                 <th width="200">Field Name</th>
                 <th width="200">Field Size (Bytes)</th>
                 <th width="200">Remove Record</th>
@@ -72,6 +73,15 @@
         <p><b>b (total required blocks)</b></p>
         <p id="total_blocks">0</p>
 
+        <p><b>Index Field</b></p>
+        <p id="index_field_name">NOT SET</p>
+
+        <p><b>Index Field Size</b></p>
+        <p id="index_field_size">0</p>
+
+        <p><b>Ri (Pointer Size + Index Field Size)</b></p>
+        <p id="record_index">0</p>
+
 
     </div>
 </div>
@@ -94,7 +104,7 @@
         //if size is an integer value and name is not blank, add to the records table, increase our running total, and change record_total with the current value
         if(Number.isInteger(parseInt(size)) && name !== ""){
             recordTotal += parseInt(size);
-            $('#record').append('<tr><td>' + name + '</td><td>' + size + '</td><td><button type="button" class="alert button">Remove Record</button></td></tr>');
+            $('#record').append('<tr><td><button type="button" class="success button index">Set Index</button></td><td>' + name + '</td><td>' + size + '</td><td><button type="button" class="alert button">Remove Record</button></td></tr>');
             $("#record_total").replaceWith('<p id="record_total">' + recordTotal + '</p>');
         } else{
             alert("Make sure all fields have values and Size field is an integer value.");
@@ -127,23 +137,37 @@
     */
     $("#calculate").click(function(){
 
-
+        var indexSize = parseInt($('#index_field_size').text());
         var R = parseInt($('#record_total').text());
+        var P = parseInt($('#block_pointer_size').val());
         var B = parseInt($('#block_size').val());
         var r = parseInt($('#record_count').val());
         var bfr = Math.floor( B/R );
         var b = Math.ceil( r/bfr );
+        var Ri = P + indexSize;
+        var bfri = Math.floor( B/Ri );
 
         //check that we have good integer values
-        if(R > 0 && Number.isInteger(B) && Number.isInteger(r) ){
+        if(R > 0 && Number.isInteger(B) && Number.isInteger(r) && Number.isInteger(P) ){
             $("#blocking_factor").replaceWith('<p id="blocking_factor">' + bfr + '</p>');
             $("#total_blocks").replaceWith('<p id="total_blocks">' + b + '</p>');
+            $('#record_index').replaceWith('<p id="record_index">' + Ri + '</p>');
+
         } else{
             alert("Please enter at least one record and ensure B, P, and r have valid values");
         }
 
 
+    });
 
+    //set the index field and value for calculations
+    $("#record").on('click', '.index', function(){
+
+        var fieldSize = parseInt($(this).parent().next().next().text());
+        var fieldName = $(this).parent().next().text();
+
+        $('#index_field_name').replaceWith('<p id="index_field_name">' + fieldName + '</p>');
+        $("#index_field_size").replaceWith('<p id="index_field_size">' + fieldSize + '</p>');
     });
 </script>
 </body>
