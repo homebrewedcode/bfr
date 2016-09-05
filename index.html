@@ -45,6 +45,9 @@
         <p><b>ri (total records in index)</b></p>
         <p id="record_index_length" class="stat">0</p>
 
+        <p><b>bfri (index blocking factor)</b></p>
+        <p id="index_blocking_factor" class="stat">0</p>
+
     </div>
 </div>
 <div class="row">
@@ -184,7 +187,7 @@
             $("#total_blocks").replaceWith('<p id="total_blocks" class="stat">' + b + '</p>');
             $('#record_index').replaceWith('<p id="record_index" class="stat">' + Ri + '</p>');
             $('#record_index_length').replaceWith('<p id="record_index_length" class="stat">' + ri + '</p>');
-
+            $('#index_blocking_factor').replaceWith('<p id="index_blocking_factor" class="stat">' + bfri + '</p>');
 
         } else{
             alert("Please enter at least one record and ensure B, P, and r have valid values");
