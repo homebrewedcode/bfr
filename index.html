@@ -48,6 +48,29 @@
     </div>
 </div>
 <div class="row">
+
+    <div class="medium-6 columns">
+        <h1>Data</h1>
+        <div>
+            <label><b>B value (block size)</b>
+                <input id="block_size" required pattern="integer" type="text" size="100" placeholder="Block Size">
+            </label>
+        </div>
+        <div>
+            <label><b>P value (block pointer size)</b>
+                <input id="block_pointer_size" required pattern="integer" type="text" size="100" placeholder="Block Pointer Size">
+            </label>
+        </div>
+        <div>
+            <label><b>r value (total number or records)</b>
+                <input id="record_count" required pattern="integer" type="text" size="100" placeholder="Record Count">
+            </label>
+        </div>
+        <div>
+            <button type="button" class="success button" id="calculate">Calculate</button>
+        </div>
+
+    </div>
     <div class="medium-6 columns">
         <h1>Record Fields</h1>
         <p>Enter all of your record fields with size to calculate the record size <b>R</b></p>
@@ -82,29 +105,9 @@
             </tbody>
         </table>
     </div>
-    <div class="medium-6 columns">
-        <h1>Data</h1>
-        <div>
-            <label><b>B value (block size)</b>
-                <input id="block_size" required pattern="integer" type="text" size="100" placeholder="Block Size">
-            </label>
-        </div>
-        <div>
-            <label><b>P value (block pointer size)</b>
-                <input id="block_pointer_size" required pattern="integer" type="text" size="100" placeholder="Block Pointer Size">
-            </label>
-        </div>
-        <div>
-            <label><b>r value (total number or records)</b>
-                <input id="record_count" required pattern="integer" type="text" size="100" placeholder="Record Count">
-            </label>
-        </div>
-        <div>
-            <button type="button" class="success button" id="calculate">Calculate</button>
-        </div>
-
-    </div>
 </div>
+
+
 
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
