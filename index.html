@@ -160,8 +160,10 @@
 
     //remove table row parent of the delete button clicked
     //was necessary to use .on for this function, as these fields are all added to the DOM after page load
-    $("#record").on('click', '.alert', function(){
+    $("#record").on('click', '.alert', function(event){
 
+        //prevents form from submitting
+        event.preventDefault();
 
         var recordValue = parseInt($(this).parent().prev().text());
         var recordTotal = parseInt($('#record_total').text());
@@ -181,6 +183,7 @@
     */
     $("#calculate").click(function(event){
 
+        //keeps form from submitting on enter
         event.preventDefault();
 
         var indexSize = parseInt($('#index_field_size').text());
@@ -197,16 +200,19 @@
         var bi = 0;
         var blockReads = 0;
 
+        //records will be number of blocks for Primary, and number of records for secondary
         if(indexType === 'Primary'){
             ri = b;
             bi = Math.ceil(ri / bfri);
-            blockReads = Math.ceil(Math.log2(bi)) + 1;
+
         }else{
             ri = r;
             bi = Math.ceil(ri / bfri);
-            blockReads = Math.ceil(bi / 2);
+
         }
 
+        //sorted index will have Log2 of blocks in index for searching
+        blockReads = Math.ceil(Math.log2(bi)) + 1;
 
         //check that we have good integer values
         if(R > 0 && Number.isInteger(B) && Number.isInteger(r) && Number.isInteger(P) && Number.isInteger(b)){
