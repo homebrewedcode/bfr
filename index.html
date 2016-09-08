@@ -20,6 +20,12 @@
         </div>
         <p><b>Index Type:</b></p>
         <p id="index_type" class="stat">Primary</p>
+
+        <p><b>Index Field</b></p>
+        <p id="index_field_name" class="stat">NOT SET</p>
+
+        <p><b>Index Field Size</b></p>
+        <p id="index_field_size" class="stat">0</p>
     </div>
     <div class="medium-3 columns" style="padding: 15px;">
         <p><b>R (size total of fields)</b></p>
@@ -32,21 +38,27 @@
         <p id="total_blocks" class="stat">0</p>
     </div>
     <div class="medium-3 columns" style="padding: 15px;">
-        <p><b>Index Field</b></p>
-        <p id="index_field_name" class="stat">NOT SET</p>
-
-        <p><b>Index Field Size</b></p>
-        <p id="index_field_size" class="stat">0</p>
-
-        <p><b>Ri (Pointer Size + Index Field Size)</b></p>
+        <p><b>R<sub>i</sub> (Pointer Size + Index Field Size)</b></p>
         <p id="record_index" class="stat">0</p>
-    </div>
-    <div class="medium-3 columns" style="padding: 15px;">
-        <p><b>ri (total records in index)</b></p>
+
+        <p><b>r<sub>i</sub> (total records in index)</b></p>
         <p id="record_index_length" class="stat">0</p>
 
-        <p><b>bfri (index blocking factor)</b></p>
+        <p><b>bfr<sub>i</sub> (index blocking factor)</b></p>
         <p id="index_blocking_factor" class="stat">0</p>
+
+        <p><b>b<sub>i</sub> (blocks in index)</b></p>
+        <p id="index_blocks" class="stat">0</p>
+    </div>
+    <div class="medium-3 columns" style="padding: 15px;">
+       <p><b>Multi Index Total Levels:</b></p>
+        <p id="total_index_levels" class="stat">0</p>
+
+        <p><b>Multi Index Total Blocks</b></p>
+        <p id="total_index_blocks" class="stat">0</p>
+
+        <p><b>Required Block Accesses</b></p>
+        <p id="block_accesses" class="stat">0</p>
 
     </div>
 </div>
@@ -54,43 +66,46 @@
 
     <div class="medium-6 columns">
         <h1>Data</h1>
-        <div>
-            <label><b>B value (block size)</b>
-                <input id="block_size" required pattern="integer" type="text" size="100" placeholder="Block Size">
-            </label>
-        </div>
-        <div>
-            <label><b>P value (block pointer size)</b>
-                <input id="block_pointer_size" required pattern="integer" type="text" size="100" placeholder="Block Pointer Size">
-            </label>
-        </div>
-        <div>
-            <label><b>r value (total number or records)</b>
-                <input id="record_count" required pattern="integer" type="text" size="100" placeholder="Record Count">
-            </label>
-        </div>
-        <div>
-            <button type="button" class="success button" id="calculate">Calculate</button>
-        </div>
+        <form>
+            <div>
+                <label><b>B value (block size)</b>
+                    <input id="block_size" type="text" size="100" placeholder="Block Size">
+                </label>
+            </div>
+            <div>
+                <label><b>P value (block pointer size)</b>
+                    <input id="block_pointer_size" type="text" size="100" placeholder="Block Pointer Size">
+                </label>
+            </div>
+            <div>
+                <label><b>r value (total number or records)</b>
+                    <input id="record_count"  type="text" size="100" placeholder="Record Count">
+                </label>
+            </div>
+            <div>
+                <button type="submit" class="success button" id="calculate">Calculate</button>
+            </div>
+        </form>
+
 
     </div>
     <div class="medium-6 columns">
         <h1>Record Fields</h1>
         <p>Enter all of your record fields with size to calculate the record size <b>R</b></p>
-        <form data-abide>
+        <form id="record_form" data-abide>
             <div>
                 <div>
                     <label><b>Field Name</b>
-                        <input id="name" required pattern="alpha_numeric" type="text" size="100" placeholder="Name">
+                        <input id="name" type="text" size="100" placeholder="Name">
                     </label>
                 </div>
                 <div>
                     <label><b>Field Size in Bytes</b>
-                        <input id="size" required pattern="integer" type="text" size="100" placeholder="Size">
+                        <input id="size" type="text" size="100" placeholder="Size">
                     </label>
                 </div>
                 <div>
-                    <button type="button" class="success button" id="add_record">Submit Field</button>
+                    <button type="submit" class="success button" id="add_record">Submit Field</button>
                 </div>
             </div>
 
@@ -137,6 +152,10 @@
         }
 
 
+        $('#name').val('');
+        $('#size').val('');
+        $('#name').focus();
+
     });
 
     //remove table row parent of the delete button clicked
@@ -160,7 +179,9 @@
     r = total number of records (we input this), bfr (blocking factor) = floor ( B / R ), b (total required blocks) = ceiling( r / bfr )
     we do the necessary calculations and update the proper values on the page.
     */
-    $("#calculate").click(function(){
+    $("#calculate").click(function(event){
+
+        event.preventDefault();
 
         var indexSize = parseInt($('#index_field_size').text());
         var R = parseInt($('#record_total').text());
@@ -173,11 +194,17 @@
         var bfri = Math.floor( B/Ri );
         var indexType = $('#index_type').text();
         var ri = 0;
+        var bi = 0;
+        var blockReads = 0;
 
         if(indexType === 'Primary'){
             ri = b;
+            bi = Math.ceil(ri / bfri);
+            blockReads = Math.ceil(Math.log2(bi)) + 1;
         }else{
             ri = r;
+            bi = Math.ceil(ri / bfri);
+            blockReads = Math.ceil(bi / 2);
         }
 
 
@@ -188,6 +215,10 @@
             $('#record_index').replaceWith('<p id="record_index" class="stat">' + Ri + '</p>');
             $('#record_index_length').replaceWith('<p id="record_index_length" class="stat">' + ri + '</p>');
             $('#index_blocking_factor').replaceWith('<p id="index_blocking_factor" class="stat">' + bfri + '</p>');
+            $('#index_blocks').replaceWith('<p id="index_blocks" class="stat">' + bi + '</p>');
+            $('#block_accesses').replaceWith('<p id="block_accesses" class="stat">' + blockReads + '</p>');
+
+            recurseBlocks(bi, bfr, 0, bi);
 
         } else{
             alert("Please enter at least one record and ensure B, P, and r have valid values");
@@ -215,6 +246,23 @@
             $("#index_type").replaceWith('<p id="index_type" class="stat">Secondary</p>');
         }
     });
+
+    //recursive function to get the total number of levels and blocks in a multi level index
+    function recurseBlocks(blocks, bfr, count, totalBlocks){
+
+        var newIndex = Math.ceil(blocks / bfr);
+        totalBlocks += newIndex;
+
+        if(newIndex <= bfr){
+            $('#total_index_levels').replaceWith('<p id="total_index_levels" class="stat">' + count + '</p>');
+            $('#total_index_blocks').replaceWith('<p id="total_index_blocks" class="stat">' + totalBlocks + '</p>');
+            return;
+
+        }else{
+            count += 1;
+            recurseBlocks(newIndex, bfr, count, totalBlocks);
+        }
+    }
 
 
 
